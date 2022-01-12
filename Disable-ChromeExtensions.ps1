@@ -47,13 +47,15 @@ Foreach($user in $users){
             # Find the specified extension folder inside \AppData\Local\Google\Chrome\User Data for each user. This works for multiple Chrome profiles. 
             $extensiondirs = Get-ChildItem $BaseDir -Recurse -Depth 2 -ErrorAction Stop | Where-Object { $_.PSIsContainer -and $_.Name.Equals($e) }
             if($extensiondirs.Exists){
-                # Attempt to delete extension folder
-                try{
-                    Remove-Item $extensiondirs.FullName -Recurse -Force
-                    $extensiontable += "Removed " + $extensiondirs.FullName
-                }
-                catch{
-                    Write-Error "Deleting " + $extensiondirs.FullName + " failed."
+                Foreach($extensiondir in $extensiondirs){
+                    # Attempt to delete extension folder
+                    try{
+                        Remove-Item $extensiondir.FullName -Recurse -Force
+                        $extensiontable += "Removed " + $extensiondir.FullName
+                    }
+                    catch{
+                        Write-Error "Deleting " + $extensiondir.FullName + " failed."
+                    }
                 }
             }
         }
